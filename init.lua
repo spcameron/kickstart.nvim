@@ -728,6 +728,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'isort',
         'black', -- Used to format Python code
         'prettier', -- Used to format HTML/CSS/JS/TS
         'clang-format', -- Used to format C
@@ -785,7 +786,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        python = { 'black' },
+        python = { 'isort', 'black' },
         go = { 'gofmt' },
         html = { 'prettier' },
         css = { 'prettier' },
