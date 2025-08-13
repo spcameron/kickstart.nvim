@@ -121,6 +121,10 @@ end)
 -- Enable break indent
 vim.o.breakindent = true
 
+-- Wrap long lines, but don't split words
+vim.o.wrap = true
+vim.o.linebreak = true
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -915,12 +919,17 @@ require('lazy').setup({
     config = function()
       require('catppuccin').setup {
         flavour = 'mocha',
-        integrations = {
-          telescope = true,
-          native_lsp = { enabled = true },
-          treesitter = true,
-          cmp = true,
+        float = {
+          transparent = false,
+          solid = false,
         },
+        auto_integrations = true,
+        -- integrations = {
+        --   telescope = true,
+        --   native_lsp = { enabled = true },
+        --   treesitter = true,
+        --   cmp = true,
+        -- },
       }
 
       -- Load the colorscheme here.
