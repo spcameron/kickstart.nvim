@@ -816,6 +816,7 @@ require('lazy').setup({
     },
   },
 
+  -- HACK: extracted
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',

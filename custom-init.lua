@@ -22,11 +22,15 @@ rtp:prepend(lazypath)
 
 require('lazy').setup {
   { import = 'custom.plugins' },
+  -- blink.lua
   -- colorscheme.lua
+  -- friendly-snippets.lua
   -- gitsigns.lua
   -- guess-indent.lua
   -- lazydev.lua
+  -- luasnip.lua
   -- telescope.lua
+  -- telescope-fzf-native.lua
   -- todo-comments.lua
   -- which-key.lua
   --
