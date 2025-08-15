@@ -9,6 +9,11 @@ return {
       mappings = vim.g.have_nerd_font,
       keys = vim.g.have_nerd_font and {},
     },
+    spec = {
+      { '<leader>s', group = '[s]earch' },
+      { '<leader>t', group = '[t]oggle' },
+      { '<leader>h', group = 'git [h]unk', mode = { 'n', 'n', 'o', 'x' } },
+    },
   },
 }
 
