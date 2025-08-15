@@ -51,9 +51,7 @@ return {
       map('n', '<leader>hi', gitsigns.preview_hunk_inline, { desc = 'git preview hunk [i]nline' })
 
       map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
-
       map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
-
       map('n', '<leader>hD', function()
         gitsigns.diffthis '@'
       end, { desc = 'git [D]iff against last commit' })
