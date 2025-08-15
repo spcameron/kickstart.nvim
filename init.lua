@@ -93,6 +93,8 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- HACK: options extracted
+--
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -170,6 +172,10 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+--
+--
+-- HACK: keymaps extracted
+--
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -209,6 +215,8 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- HACK: autocommands extracted
+--
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -223,6 +231,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- HACK: lazy.nvim extracted
+--
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -250,8 +260,11 @@ rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+  -- HACK: extracted
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
+   -- Detect tabstop and shiftwidth automatically
+  {'NMAC427/guess-indent.nvim',
+  opts = {}},
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -273,6 +286,8 @@ require('lazy').setup({
   --
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`.
+  --
+  -- HACK: extracted
   --
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
@@ -912,9 +927,11 @@ require('lazy').setup({
     end,
   },
 
+  -- HACK: extracted
   { -- Install and configure Catppuccin as the default theme
     'catppuccin/nvim',
     name = 'catppuccin',
+    lazy = false,
     priority = 1000,
     config = function()
       require('catppuccin').setup {
@@ -931,7 +948,6 @@ require('lazy').setup({
         --   cmp = true,
         -- },
       }
-
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'catppuccin-frappe', 'catppuccin-latte', etc.
@@ -939,6 +955,7 @@ require('lazy').setup({
     end,
   },
 
+  -- HACK: extracted
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 

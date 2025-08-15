@@ -1,8 +1,9 @@
+-- catppuccin-mocha colortheme
+
 return {
   'catppuccin/nvim',
-  name = 'catppuccin',
-  priority = 1000,
   lazy = false,
+  priority = 1000,
   opts = {
     flavour = 'mocha',
     float = {
@@ -12,8 +13,6 @@ return {
     auto_integrations = true,
   },
   config = function(_, opts)
-    local cp = require 'catppuccin'
-    cp.setup(opts)
     vim.cmd.colorscheme('catppuccin-' .. (opts.flavour or 'mocha'))
   end,
 }

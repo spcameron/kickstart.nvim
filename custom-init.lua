@@ -1,5 +1,6 @@
 require 'custom.core.options'
 require 'custom.core.keymaps'
+require 'custom.core.autocommands'
 
 -- [[ install `lazy.nvim` plugin manager ]]
 
@@ -12,13 +13,34 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 
-vim.opt.rtp:prepend(lazypath)
+local rtp = vim.opt.rtp
+rtp:prepend(lazypath)
 
 -- [[ configure and install plugins ]]
+-- run `:Lazy` to check the current status of plugins
+-- run `:Lazy update` to ... update plugins
 
 require('lazy').setup {
   { import = 'custom.plugins' },
   -- colorscheme.lua
+  -- gitsigns.lua
+  -- guess-indent.lua
+  -- todo-comments.lua
+  --
+  -- TODO:
+  -- folke/which-key.nvim
+  -- nvim-telescope/telescope.nvim
+  -- folke/lazydev.nvim
+  -- neovim/nvim-lspconfig
+  -- stevearc/conform.nvim
+  -- saghen/blink.cmp
+  -- nvim-treesitter/nvim-treesitter
+  -- debug
+  -- indent_line
+  -- lint
+  -- autopairs
+  -- neo-tree
+  -- gitsigns - keymaps
 }
 
 -- modeline
