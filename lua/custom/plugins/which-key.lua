@@ -12,7 +12,7 @@ return {
     spec = {
       { '<leader>s', group = '[s]earch' },
       { '<leader>t', group = '[t]oggle' },
-      { '<leader>h', group = 'git [h]unk', mode = { 'n', 'n', 'o', 'x' } },
+      { '<leader>h', group = 'git [h]unk', mode = { 'n', 'v', 'o', 'x' } },
     },
   },
 }

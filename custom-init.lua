@@ -25,12 +25,12 @@ require('lazy').setup {
   -- colorscheme.lua
   -- gitsigns.lua
   -- guess-indent.lua
+  -- lazydev.lua
+  -- telescope.lua
   -- todo-comments.lua
+  -- which-key.lua
   --
   -- TODO:
-  -- folke/which-key.nvim
-  -- nvim-telescope/telescope.nvim
-  -- folke/lazydev.nvim
   -- neovim/nvim-lspconfig
   -- stevearc/conform.nvim
   -- saghen/blink.cmp
@@ -40,8 +40,6 @@ require('lazy').setup {
   -- lint
   -- autopairs
   -- neo-tree
-  -- gitsigns - keymaps
 }
 
--- modeline
 -- vim: ts=2 sts=2 sw=2 et

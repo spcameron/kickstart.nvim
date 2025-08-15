@@ -30,6 +30,7 @@ return {
     },
   },
   config = function()
+    -- enable telescope extensions (if they are installed)
     pcall(require('telescope').load_extension, 'fzf')
     pcall(require('telescope').load_extension, 'ui-select')
 
@@ -41,6 +42,7 @@ return {
       vim.keymap.set(mode, l, r, opts)
     end
 
+    -- keymappings
     map('n', '<leader>sh', builtin.help_tags, { desc = '[s]earch [h]elp' })
     map('n', '<leader>sk', builtin.keymaps, { desc = '[s]earch [k]eymaps' })
     map('n', '<leader>sf', builtin.find_files, { desc = '[s]earch [f]iles' })

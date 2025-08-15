@@ -50,6 +50,10 @@ return {
       map('n', '<leader>hi', gitsigns.preview_hunk_inline, { desc = 'git preview hunk [i]nline' })
 
       map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
+      map('n', '<leader>hB', function()
+        gitsigns.blame_line { full = true }
+      end, { desc = 'git [B]lame full' })
+
       map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
       map('n', '<leader>hD', function()
         gitsigns.diffthis '@'
