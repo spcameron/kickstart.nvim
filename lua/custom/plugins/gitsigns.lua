@@ -11,6 +11,7 @@ return {
       delete = { text = '_' },
       topdelete = { text = '‾' },
       changedelete = { text = '~' },
+      untracked = { text = '┆' },
     },
     on_attach = function(bufnr)
       local gitsigns = require 'gitsigns'
@@ -41,7 +42,21 @@ return {
       -- actions
 
       map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })
+      map('n', '<leader>hu', gitsigns.stage_hunk, { desc = 'git [u]ndo stage hunk' })
       map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'git [r]eset hunk' })
+
+      map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'git [S]tage buffer' })
+      map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
+      map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
+      map('n', '<leader>hi', gitsigns.preview_hunk_inline, { desc = 'git preview hunk [i]nline' })
+
+      map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
+
+      map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
+
+      map('n', '<leader>hD', function()
+        gitsigns.diffthis '@'
+      end, { desc = 'git [D]iff against last commit' })
 
       map('v', '<leader>hs', function()
         gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
@@ -52,6 +67,11 @@ return {
       end, { desc = 'git [r]eset hunk' })
 
       -- toggles
+      map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[t]oggle current line [b]lame' })
+      map('n', '<leader>tw', gitsigns.toggle_word_diff, { desc = '[t]oggle [w]ord diff' })
+
+      -- text object
+      map({ 'o', 'x' }, 'ih', gitsigns.select_hunk, { desc = 'select the [h]unk under the cursor' })
     end,
   },
 }
