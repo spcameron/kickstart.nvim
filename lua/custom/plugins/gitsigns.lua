@@ -40,7 +40,6 @@ return {
       end, { desc = 'Jump to previous git [c]hange' })
 
       -- actions
-
       map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })
       map('n', '<leader>hu', gitsigns.stage_hunk, { desc = 'git [u]ndo stage hunk' })
       map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'git [r]eset hunk' })
