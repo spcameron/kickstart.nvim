@@ -37,9 +37,32 @@ return {
       end,
     })
 
+    local hide_in_width = function()
+      return vim.fn.winwidth(0) > 100
+    end
+
+    local filename = {
+      'filename',
+      file_status = true,
+      path = 0, -- 0 = just filename, 1 = relative path, 2 = absolute path
+    }
+
+    local diagnostics = {
+      'diagnostics',
+      sources = { 'nvim_diagnostic' },
+      sections = { 'error', 'warn' },
+      symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
+      cond = hide_in_width,
+    }
+
+    local diff = {
+      'diff',
+      cond = hide_in_width,
+    }
+
     return {
       options = {
-        theme = 'catppuccin-mocha',
+        theme = 'catppuccin',
         icons_enabled = has_icons,
         globalstatus = false,
         component_separators = has_icons and { left = '', right = '' } or { left = '', right = '' },
@@ -47,9 +70,9 @@ return {
       },
       sections = {
         lualine_a = { 'mode' },
-        lualine_b = { 'branch', 'diff' },
-        lualine_c = { { 'filename', path = 1 } },
-        lualine_x = { macro_status, { 'diagnostics', sources = { 'nvim_lsp' } }, 'encoding', 'filetype' },
+        lualine_b = { 'branch', diff },
+        lualine_c = { filename },
+        lualine_x = { macro_status, diagnostics, 'encoding', 'filetype' },
         lualine_y = { 'progress' },
         lualine_z = {
           function()
