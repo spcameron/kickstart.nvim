@@ -35,7 +35,6 @@ return {
       end
     end,
     formatters_by_ft = {
-      clojure = { 'cljstyle' },
       css = { 'prettier' },
       go = { 'goimports' },
       html = { 'prettier' },

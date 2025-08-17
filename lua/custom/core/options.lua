@@ -4,6 +4,9 @@
 -- Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- enable 24-bit color
+vim.opt.termguicolors = true
+
 -- make line numbers default
 vim.o.number = true
 

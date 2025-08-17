@@ -114,9 +114,10 @@ return {
         })
 
         -- keymapping to toggle inlay hints, if the LSP supports them
-        if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayhint, event.buf) then
+        if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
           map('n', '<leader>th', function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            local enabled = vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }
+            vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
           end, '[t]oggle inlay [h]ints')
         end
       end,
@@ -135,18 +136,19 @@ return {
           [vim.diagnostic.severity.INFO] = '󰋽 ',
           [vim.diagnostic.severity.HINT] = '󰌶 ',
         },
-      } or {},
+      } or {
+        text = {
+          [vim.diagnostic.severity.ERROR] = 'E',
+          [vim.diagnostic.severity.WARN] = 'W',
+          [vim.diagnostic.severity.INFO] = 'I',
+          [vim.diagnostic.severity.HINT] = 'H',
+        },
+      },
       virtual_text = {
         source = 'if_many',
         spacing = 2,
-        format = function(diagnostic)
-          local diagnostic_message = {
-            [vim.diagnostic.severity.ERROR] = diagnostic.message,
-            [vim.diagnostic.severity.WARN] = diagnostic.message,
-            [vim.diagnostic.severity.INFO] = diagnostic.message,
-            [vim.diagnostic.severity.HINT] = diagnostic.message,
-          }
-          return diagnostic_message[diagnostic.severity]
+        format = function(d)
+          return d.message
         end,
       },
     }
@@ -227,7 +229,7 @@ return {
 
       -- Python
       pyright = { on_attach = on_attach },
-      ruff_lsp = { on_attach = on_attach }, -- diagnostics & code actions; Conform formats
+      ruff = { on_attach = on_attach }, -- diagnostics & code actions; Conform formats
 
       -- Rust
       rust_analyzer = { on_attach = on_attach },
@@ -243,22 +245,23 @@ return {
       vimls = { on_attach = on_attach },
     }
 
-    local lsp_to_pkg = require('mason-lspconfig.mappings.server').lspconfig_to_package
-    local server_pkgs = {}
-    for name, _ in pairs(servers) do
-      local pkg = lsp_to_pkg[name]
-      if not pkg and name == 'ts_ls' then
-        pkg = 'typescript-language-server'
-      end
-      if pkg then
-        table.insert(server_pkgs, pkg)
-      end
-    end
+    -- local lsp_to_pkg = require('mason-lspconfig.mappings.server').lspconfig_to_package
+    -- local server_pkgs = {}
+    -- for name, _ in pairs(servers) do
+    --   local pkg = lsp_to_pkg[name]
+    --   if not pkg and name == 'ts_ls' then
+    --     pkg = 'typescript-language-server'
+    --   end
+    --   if pkg then
+    --     table.insert(server_pkgs, pkg)
+    --   end
+    -- end
+
+    local ensure_lsp = vim.tbl_keys(servers)
 
     local tools = {
       'black',
       'clang-format',
-      'cljstyle',
       'eslint_d',
       'goimports',
       'prettier',
@@ -267,7 +270,7 @@ return {
     }
 
     local ensure_installed = {}
-    vim.list_extend(ensure_installed, server_pkgs)
+    vim.list_extend(ensure_installed, ensure_lsp)
     vim.list_extend(ensure_installed, tools)
     table.sort(ensure_installed)
 
@@ -283,17 +286,26 @@ return {
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+    -- require('mason-lspconfig').setup {
+    --   ensure_installed = {},
+    --   automatic_installation = false,
+    --   handlers = {
+    --     function(server_name)
+    --       local server = servers[server_name] or {}
+    --       server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+    --       require('lspconfig')[server_name].setup(server)
+    --     end,
+    --   },
+    -- }
+
     require('mason-lspconfig').setup {
-      ensure_installed = {},
-      automatic_installation = false,
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
-        end,
-      },
+      ensure_installed = ensure_lsp,
     }
+
+    for server_name, server in pairs(servers) do
+      server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+      require('lspconfig')[server_name].setup(server)
+    end
   end,
 }
 

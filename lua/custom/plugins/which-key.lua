@@ -39,11 +39,15 @@ return {
       },
     },
 
-    -- document existing key chaings
+    -- document existing key chains
     spec = {
+      { '<leader>b', group = '[b]uffer' },
+      { '<leader>d', group = '[d]ebug' },
+      { '<leader>h', group = 'git [h]unk', mode = { 'n', 'v', 'o', 'x' } },
       { '<leader>s', group = '[s]earch' },
       { '<leader>t', group = '[t]oggle' },
-      { '<leader>h', group = 'git [h]unk', mode = { 'n', 'v', 'o', 'x' } },
+      { '<leader>T', group = '[T]ab' },
+      { '<leader>x', group = '[x] trouble' },
     },
   },
 }

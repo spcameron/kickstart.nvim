@@ -1,8 +1,10 @@
--- detect tabstop and shiftwidth automatically
+-- add indentation guides (even on blank lines)
 
 return {
-  'NMAC427/guess-indent.nvim',
+  'lukas-reineke/indent-blankline.nvim',
+  main = 'ibl',
   opts = {
+    scope = { enabled = true },
     exclude = {
       filetypes = { 'alpha', 'neo-tree', 'trouble', 'lazy', 'mason', 'help', 'gitcommit' },
     },

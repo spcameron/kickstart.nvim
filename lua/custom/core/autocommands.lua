@@ -1,13 +1,23 @@
 -- [[ basic autocommands ]]
--- see `:help lua-guide-autcommands`
+-- see `:help lua-guide-autocommands`
 
--- highlight when yanking text
--- see `:help vim.hl.on_yank()`
+-- Yank highlight (0.11 uses vim.hl.on_yank)
+local yank_grp = vim.api.nvim_create_augroup('KickstartHighlightYank', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
+  group = yank_grp,
   desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_creat_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.hl.on_yank()
+  end,
+})
+
+-- Equalize splits when the editor is resized
+local resize_grp = vim.api.nvim_create_augroup('EqualizeSplitsOnResize', { clear = true })
+vim.api.nvim_create_autocmd('VimResized', {
+  group = resize_grp,
+  desc = 'Equalize window splits on UI resize',
+  callback = function()
+    vim.cmd 'wincmd ='
   end,
 })
 

@@ -1,9 +1,10 @@
 -- add git related signs to the gutter,
 -- as well as utils for managing changes
--- see `:help gisigns`
+-- see `:help gitsigns`
 
 return {
   'lewis6991/gitsigns.nvim',
+  event = { 'BufReadPre', 'BufNewFile' },
   opts = {
     signs = {
       add = { text = '+' },
@@ -29,7 +30,7 @@ return {
         else
           gitsigns.nav_hunk 'next'
         end
-      end, { desc = 'Jump to next git [c]hange' })
+      end, { desc = 'jump to next git [c]hange' })
 
       map('n', '[c', function()
         if vim.wo.diff then
@@ -37,7 +38,7 @@ return {
         else
           gitsigns.nav_hunk 'prev'
         end
-      end, { desc = 'Jump to previous git [c]hange' })
+      end, { desc = 'jump to previous git [c]hange' })
 
       -- actions
       map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })

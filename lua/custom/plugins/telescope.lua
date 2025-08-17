@@ -13,6 +13,10 @@ return {
   },
   opts = {
     pickers = {
+      buffers = {
+        sort_mru = true,
+        ignore_current_buffer = true,
+      },
       colorscheme = {
         enable_preview = true,
       },

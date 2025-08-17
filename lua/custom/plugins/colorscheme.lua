@@ -2,17 +2,19 @@
 
 return {
   'catppuccin/nvim',
+  name = 'catppuccin',
   lazy = false,
   priority = 1000,
   opts = {
     flavour = 'mocha',
-    float = {
-      transparent = false,
-      solid = false,
-    },
     auto_integrations = true,
+    integrations = {
+      blink_cmp = true,
+      -- add others here later (telescope, gitsigns, treesitter, etc.)
+    },
   },
   config = function(_, opts)
+    require('catppuccin').setup(opts)
     vim.cmd.colorscheme('catppuccin-' .. (opts.flavour or 'mocha'))
   end,
 }

@@ -1041,10 +1041,14 @@ require('lazy').setup({
   --
   -- TODO:
   -- require 'kickstart.plugins.debug',
+  -- HACK: extracted
   require 'kickstart.plugins.indent_line',
+  -- HACK: extracted
   -- require 'kickstart.plugins.lint',
+  -- HACK: extracted
   require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  -- HACK: extracted
+  require 'kickstart.plugins.neo-tree',
   -- HACK: extracted
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
