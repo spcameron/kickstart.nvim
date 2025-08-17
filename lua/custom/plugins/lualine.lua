@@ -41,7 +41,7 @@ return {
       options = {
         theme = 'catppuccin-mocha',
         icons_enabled = has_icons,
-        globalstatus = true,
+        globalstatus = false,
         component_separators = has_icons and { left = '', right = '' } or { left = '', right = '' },
         section_separators = has_icons and { left = '', right = '' } or { left = '', right = '' },
       },

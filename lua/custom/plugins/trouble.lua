@@ -35,13 +35,27 @@ return {
     -- lists
     {
       '<leader>xL',
-      '<cmd>Trouble loclist toggle<CR>',
-      desc = 'trouble: [L]ocation list',
+      function()
+        -- If loclist is empty, populate it from diagnostics for the current window
+        local size = vim.fn.getloclist(0, { size = 0 }).size or 0
+        if size == 0 then
+          vim.diagnostic.setloclist { open = false }
+        end
+        vim.cmd 'Trouble loclist toggle'
+      end,
+      desc = 'trouble: [L]ocation list (smart)',
     },
     {
       '<leader>xQ',
-      '<cmd>Trouble qflist toggle<CR>',
-      desc = 'trouble: [Q]uickfix list',
+      function()
+        -- If quickfix is empty, populate it from diagnostics (workspace-wide)
+        local size = vim.fn.getqflist({ size = 0 }).size or 0
+        if size == 0 then
+          vim.diagnostic.setqflist { open = false }
+        end
+        vim.cmd 'Trouble qflist toggle'
+      end,
+      desc = 'trouble: [Q]uickfix list (smart)',
     },
   },
 }
