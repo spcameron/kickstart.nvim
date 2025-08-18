@@ -56,24 +56,11 @@ return {
         local hl_grp = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
         local det_grp = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = false })
 
-        -- this resolves a difference between versions 0.11 and 0.10
-        ---@param client vim.lsp.Client
-        ---@param method vim.lsp.protocol.Method
-        ---@param bufnr? integer
-        ---@return boolean
-        local function client_supports_method(client, method, bufnr)
-          if vim.fn.has 'nvim-0.11' == 1 then
-            return client:supports_method(method, bufnr)
-          else
-            return client.supports_method(method, { bufnr = bufnr })
-          end
-        end
-
         local client = vim.lsp.get_client_by_id(event.data.client_id)
 
         if
           client
-          and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
+          and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
           and not vim.b[event.buf].lsp_doc_highlight_set
         then
           vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -100,7 +87,7 @@ return {
             -- keep highlight if another client still supports it
             local keep = false
             for _, c in pairs(vim.lsp.get_clients { bufnr = ev.buf }) do
-              if client_supports_method(c, vim.lsp.protocol.Methods.textDocument_documentHighlight, ev.buf) then
+              if c:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, ev.buf) then
                 keep = true
                 break
               end
@@ -114,7 +101,7 @@ return {
         })
 
         -- keymapping to toggle inlay hints, if the LSP supports them
-        if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
           map('n', '<leader>th', function()
             local enabled = vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }
             vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
@@ -127,7 +114,7 @@ return {
     -- see `:help vim.diagnostic.Opts`
     vim.diagnostic.config {
       severity_sort = true,
-      float = { border = 'rounded', source = 'if_many' },
+      float = { border = 'rounded', source = true }, -- boolean = always
       underline = { severity = vim.diagnostic.severity.ERROR },
       signs = vim.g.have_nerd_font and {
         text = {
@@ -145,11 +132,8 @@ return {
         },
       },
       virtual_text = {
-        source = 'if_many',
+        source = true, -- boolean = always (use 'if_many' if you prefer)
         spacing = 2,
-        format = function(d)
-          return d.message
-        end,
       },
     }
 
@@ -245,18 +229,6 @@ return {
       vimls = { on_attach = on_attach },
     }
 
-    -- local lsp_to_pkg = require('mason-lspconfig.mappings.server').lspconfig_to_package
-    -- local server_pkgs = {}
-    -- for name, _ in pairs(servers) do
-    --   local pkg = lsp_to_pkg[name]
-    --   if not pkg and name == 'ts_ls' then
-    --     pkg = 'typescript-language-server'
-    --   end
-    --   if pkg then
-    --     table.insert(server_pkgs, pkg)
-    --   end
-    -- end
-
     local ensure_lsp = vim.tbl_keys(servers)
 
     local tools = {
@@ -286,20 +258,9 @@ return {
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
-    -- require('mason-lspconfig').setup {
-    --   ensure_installed = {},
-    --   automatic_installation = false,
-    --   handlers = {
-    --     function(server_name)
-    --       local server = servers[server_name] or {}
-    --       server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-    --       require('lspconfig')[server_name].setup(server)
-    --     end,
-    --   },
-    -- }
-
     require('mason-lspconfig').setup {
       ensure_installed = ensure_lsp,
+      automatic_enable = false,
     }
 
     for server_name, server in pairs(servers) do

@@ -135,6 +135,10 @@ return {
   config = function()
     local dap, dapui = require 'dap', require 'dapui'
 
+    -- libuv handle (NVIM 0.11+ prefers vim.uv)
+    local uv = vim.uv or vim.loop
+    local is_win = (uv.os_uname().sysname == 'Windows_NT')
+
     -- 1) Install/ensure adapters via Mason
     require('mason-nvim-dap').setup {
       automatic_installation = true,
@@ -147,9 +151,12 @@ return {
     }
 
     -- 2) DAP UI
+    ---@diagnostic disable-next-line: missing-fields
     dapui.setup {
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
+        enabled = true,
+        element = 'repl',
         icons = {
           pause = '⏸',
           play = '▶',
@@ -188,32 +195,21 @@ return {
 
     -- 6) Python (debugpy via Mason)
     do
-      local ok, mason_registry = pcall(require, 'mason-registry')
-      local python_path = 'python'
-      if ok and mason_registry.has_package 'debugpy' then
-        local pkg = mason_registry.get_package 'debugpy'
-        local install_path = pkg:get_install_path()
-        -- debugpy bundles a venv; point to its Python
-        if vim.loop.os_uname().sysname == 'Windows_NT' then
-          python_path = install_path .. '\\venv\\Scripts\\python.exe'
-        else
-          python_path = install_path .. '/venv/bin/python'
-        end
-      end
+      -- Mason installs debugpy into a venv at a stable path:
+      local mason = vim.fn.stdpath 'data' .. '/mason/packages'
+      local python_path = is_win and (mason .. '/debugpy/venv/Scripts/python.exe') or (mason .. '/debugpy/venv/bin/python')
       require('dap-python').setup(python_path)
       -- optional: pytest helper mappings could go here later
     end
 
     -- 7) JavaScript / TypeScript (js-debug via Mason)
     do
-      local ok, mason_registry = pcall(require, 'mason-registry')
-      local debugger_path
-      if ok and mason_registry.has_package 'js-debug-adapter' then
-        local pkg = mason_registry.get_package 'js-debug-adapter'
-        debugger_path = pkg:get_install_path() .. '/js-debug'
-      end
+      -- Mason’s js-debug adapter lives here:
+      local mason = vim.fn.stdpath 'data' .. '/mason/packages'
+      local debugger_path = mason .. '/js-debug-adapter/js-debug'
+      ---@diagnostic disable-next-line: missing-fields
       require('dap-vscode-js').setup {
-        debugger_path = debugger_path, -- if nil, plugin tries defaults; Mason path is preferred
+        debugger_path = debugger_path, -- root of vscode-js-debug; plugin resolves server script
         adapters = { 'pwa-node', 'pwa-chrome', 'node-terminal', 'pwa-extensionHost' },
       }
 
@@ -268,19 +264,6 @@ return {
         end,
       },
     }
-
-    -- Optional: load vscode-style launch.json if present (maps adapters to filetypes)
-    local ok, vscode = pcall(require, 'dap.ext.vscode')
-    if ok then
-      vscode.load_launchjs(nil, {
-        ['pwa-node'] = { 'javascript', 'typescript' },
-        ['node'] = { 'javascript', 'typescript' },
-        ['pwa-chrome'] = { 'javascript', 'typescript' },
-        ['chrome'] = { 'javascript', 'typescript' },
-        ['python'] = { 'python' },
-        ['codelldb'] = { 'c', 'cpp', 'rust' },
-      })
-    end
   end,
 }
 
