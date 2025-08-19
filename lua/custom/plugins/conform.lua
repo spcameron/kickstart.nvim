@@ -45,6 +45,11 @@ return {
       typescript = { 'eslint_d', 'prettier' },
       typescriptreact = { 'eslint_d', 'prettier' },
     },
+    formatters = {
+      eslint_d = {
+        prefer_local = 'node_modules/.bin',
+      },
+    },
   },
 }
 

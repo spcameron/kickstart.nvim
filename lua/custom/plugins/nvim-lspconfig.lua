@@ -179,6 +179,30 @@ return {
       -- Dockerfile
       dockerls = { on_attach = on_attach },
 
+      -- Emmet
+      -- emmet_ls = {
+      --   on_attach = on_attach,
+      --   filetypes = {
+      --     'html',
+      --     'css',
+      --     'javascript',
+      --     'typescript',
+      --     'javascriptreact',
+      --     'typescriptreact',
+      --   },
+      -- },
+
+      -- Emmet (olrtg) -- VS Code-backed engine
+      emmet_language_server = {
+        on_attach = on_attach,
+        filetypes = {
+          'html',
+          'css',
+          'javascript',
+          'typescript',
+        },
+      },
+
       -- Go
       gopls = { on_attach = on_attach },
 
