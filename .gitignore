@@ -1,6 +1,13 @@
+# ========== Neovim ==========
+
+# Ignore generated or runtime files
 tags
+spell/
 test.sh
 .luarc.json
 nvim
 
-spell/
+# ========== Node.js ==========
+node_modules/
+package-lock.json
+package.json
