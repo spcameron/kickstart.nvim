@@ -5,6 +5,13 @@ return {
   event = 'VeryLazy',
   opts = {
     delay = 0,
+    -- stop which-key from injecting the default [ / ] "nav" presets
+    plugins = {
+      presets = {
+        nav = false, -- disables the built-in [ ] suggestions (bprevious, brewind, …)
+        -- leave other presets alone (z, g, windows, etc.)
+      },
+    },
     icons = {
       mappings = vim.g.have_nerd_font,
       keys = vim.g.have_nerd_font and {} or {
@@ -39,6 +46,15 @@ return {
       },
     },
 
+    -- explicitly declare which prefixes to watch
+    -- omit [ and ] so they won't be auto-discovered
+    triggers = {
+      { '<leader>', mode = { 'n', 'v', 'o', 'x' } },
+      { 'g', mode = { 'n', 'v', 'o', 'x' } },
+      { '[', mode = 'n' },
+      { ']', mode = 'n' },
+    },
+
     -- document existing key chains
     spec = {
       { '<leader>b', group = '[b]uffer' },
@@ -48,6 +64,10 @@ return {
       { '<leader>t', group = '[t]oggle' },
       { '<leader>T', group = '[T]ab' },
       { '<leader>x', group = '[x] trouble' },
+
+      -- groups only; actual items + labels come from the mappings themselves
+      { '[', group = 'Prev' },
+      { ']', group = 'Next' },
     },
   },
 }
