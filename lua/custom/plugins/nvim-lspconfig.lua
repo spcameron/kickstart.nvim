@@ -243,7 +243,7 @@ return {
       rust_analyzer = { on_attach = on_attach },
 
       -- SQL
-      sqls = { on_attach = on_attach },
+      -- sqls = { on_attach = on_attach },
 
       -- TypeScript / JavaScript
       ts_ls = { on_attach = on_attach }, -- consider 'vtsls' if you want; same on_attach
@@ -289,7 +289,8 @@ return {
 
     for server_name, server in pairs(servers) do
       server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-      require('lspconfig')[server_name].setup(server)
+      vim.lsp.config(server_name, server)
+      vim.lsp.enable(server_name)
     end
   end,
 }
