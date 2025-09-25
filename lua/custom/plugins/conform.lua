@@ -42,6 +42,7 @@ return {
       javascriptreact = { 'eslint_d', 'prettier' },
       lua = { 'stylua' },
       python = { 'ruff_fix', 'black' },
+      sql = { 'pg_format' },
       typescript = { 'eslint_d', 'prettier' },
       typescriptreact = { 'eslint_d', 'prettier' },
     },
