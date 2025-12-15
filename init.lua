@@ -51,6 +51,7 @@ require('lazy').setup({
   -- nvim-lspconfig.lua
   -- nvim-notify.lua
   -- nvim-treesitter-context.lua
+  -- nvim-treesitter-textobjects.lua
   -- nvim-treesitter.lua
   -- nvim-web-devicons.lua
   -- telescope-fzf-native.lua

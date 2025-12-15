@@ -12,10 +12,9 @@ return {
     'jay-babu/mason-nvim-dap.nvim',
 
     -- Language helpers
-    'leoluz/nvim-dap-go', -- Go (you already had this)
+    'leoluz/nvim-dap-go', -- Go
     'mfussenegger/nvim-dap-python', -- Python
-    'mxsdev/nvim-dap-vscode-js', -- JS/TS glue (adapter comes from Mason)
-    'jbyuki/one-small-step-for-vimkind', -- Lua (OSV)
+    'jbyuki/one-small-step-for-vimkind', -- Lua
 
     -- Quality of life
     'theHamsta/nvim-dap-virtual-text', -- inline values
@@ -23,13 +22,20 @@ return {
   },
 
   keys = {
-    -- core stepping
+    -- core stepping (F-keys + leader equivalents)
     {
       '<F5>',
       function()
         require('dap').continue()
       end,
       desc = '[d]ebug: Start/Continue',
+    },
+    {
+      '<leader>dc',
+      function()
+        require('dap').continue()
+      end,
+      desc = '[d]ebug: Start/[c]ontinue',
     },
     {
       '<F1>',
@@ -39,6 +45,13 @@ return {
       desc = '[d]ebug: Step Into',
     },
     {
+      '<leader>di',
+      function()
+        require('dap').step_into()
+      end,
+      desc = '[d]ebug: Step [i]nto',
+    },
+    {
       '<F2>',
       function()
         require('dap').step_over()
@@ -46,11 +59,25 @@ return {
       desc = '[d]ebug: Step Over',
     },
     {
+      '<leader>dn',
+      function()
+        require('dap').step_over()
+      end,
+      desc = '[d]ebug: Step [n]ext (over)',
+    },
+    {
       '<F3>',
       function()
         require('dap').step_out()
       end,
       desc = '[d]ebug: Step Out',
+    },
+    {
+      '<leader>do',
+      function()
+        require('dap').step_out()
+      end,
+      desc = '[d]ebug: Step [o]ut',
     },
 
     -- breakpoints
@@ -78,6 +105,13 @@ return {
       desc = '[d]ebug: Toggle UI',
     },
     {
+      '<leader>du',
+      function()
+        require('dapui').toggle()
+      end,
+      desc = '[d]ebug: Toggle [u]I',
+    },
+    {
       '<leader>dr',
       function()
         require('dap').repl.toggle()
@@ -94,11 +128,11 @@ return {
       desc = '[d]AP: [f]rames',
     },
     {
-      '<leader>dc',
+      '<leader>dC',
       function()
         require('telescope').extensions.dap.commands()
       end,
-      desc = '[d]AP: [c]ommands',
+      desc = '[d]AP: [C]ommands',
     },
     {
       '<leader>dl',
@@ -113,6 +147,42 @@ return {
         require('telescope').extensions.dap.variables()
       end,
       desc = '[d]AP: [v]ariables',
+    },
+
+    -- Go helpers
+    {
+      '<leader>dt',
+      function()
+        require('dap-go').debug_test()
+      end,
+      desc = '[d]ebug: Go [t]est (closest)',
+    },
+    {
+      '<leader>dT',
+      function()
+        local dap = require 'dap'
+        local configs = dap.configurations.go or {}
+
+        -- Prefer the package-aware config if it exists (added by dap-go / common setups).
+        for _, cfg in ipairs(configs) do
+          if cfg.name == 'Debug test (go.mod)' then
+            dap.run(cfg)
+            return
+          end
+        end
+
+        -- Fallback: if any Go test config exists, run the first one name like a test.
+        for _, cfg in ipair(configs) do
+          if type(cfg.name) == 'string' and cfg.name:lower():find('debug test', 1, true) then
+            dap.run(cfg)
+            return
+          end
+        end
+
+        -- Last resort: force the selection UI.
+        dap.continue()
+      end,
+      desc = '[d]ebug: Go [T]ests (package)',
     },
 
     -- Lua (OSV) helpers
@@ -135,9 +205,8 @@ return {
   config = function()
     local dap, dapui = require 'dap', require 'dapui'
 
-    -- libuv handle (NVIM 0.11+ prefers vim.uv)
-    local uv = vim.uv or vim.loop
-    local is_win = (uv.os_uname().sysname == 'Windows_NT')
+    -- Consisten platform check
+    local is_win = vim.fn.has 'win32' == 1
 
     -- 1) Install/ensure adapters via Mason
     require('mason-nvim-dap').setup {
@@ -145,7 +214,6 @@ return {
       ensure_installed = {
         'delve', -- Go
         'debugpy', -- Python
-        'js-debug-adapter', -- JS/TS (Microsoft js-debug)
       },
       handlers = {},
     }
@@ -190,7 +258,7 @@ return {
 
     -- 5) Go (dlv)
     require('dap-go').setup {
-      delve = { detached = vim.fn.has 'win32' == 0 },
+      delve = { detached = not is_win },
     }
 
     -- 6) Python (debugpy via Mason)
@@ -202,50 +270,7 @@ return {
       -- optional: pytest helper mappings could go here later
     end
 
-    -- 7) JavaScript / TypeScript (js-debug via Mason)
-    do
-      -- Mason’s js-debug adapter lives here:
-      local mason = vim.fn.stdpath 'data' .. '/mason/packages'
-      local debugger_path = mason .. '/js-debug-adapter/js-debug'
-      ---@diagnostic disable-next-line: missing-fields
-      require('dap-vscode-js').setup {
-        debugger_path = debugger_path, -- root of vscode-js-debug; plugin resolves server script
-        adapters = { 'pwa-node', 'pwa-chrome', 'node-terminal', 'pwa-extensionHost' },
-      }
-
-      -- Common Node/TS configs
-      for _, language in ipairs { 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' } do
-        dap.configurations[language] = {
-          {
-            type = 'pwa-node',
-            request = 'launch',
-            name = 'Launch file',
-            program = '${file}',
-            cwd = '${workspaceFolder}',
-            runtimeExecutable = 'node',
-          },
-          {
-            type = 'pwa-node',
-            request = 'attach',
-            name = 'Attach (pick process)',
-            processId = require('dap.utils').pick_process,
-            cwd = '${workspaceFolder}',
-          },
-          -- Example Jest test config (enable if you use Jest):
-          -- {
-          --   type = 'pwa-node',
-          --   request = 'launch',
-          --   name = 'Jest Current File',
-          --   runtimeExecutable = 'node',
-          --   runtimeArgs = { './node_modules/jest/bin/jest.js', '${file}', '--runInBand' },
-          --   cwd = '${workspaceFolder}',
-          --   console = 'integratedTerminal',
-          -- }
-        }
-      end
-    end
-
-    -- 8) Lua (OSV) — attach to a running Neovim/Lua program
+    -- 7) Lua (OSV) — attach to a running Neovim/Lua program
     dap.adapters.nlua = function(callback, config)
       callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
     end
